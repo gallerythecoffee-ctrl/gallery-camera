@@ -355,8 +355,15 @@
 
         const resData = await response.json();
         if (resData.ok) {
-          if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.close();
+          const photos = resData.result.photo;
+          const bestPhoto = photos[photos.length - 1];
+          const payload = JSON.stringify({
+            file_id: bestPhoto.file_id,
+            message_id: resData.result.message_id
+          });
+
+          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+            window.Telegram.WebApp.sendData(payload);
           } else {
             showLoading("✅ Done! You can close this window.");
           }
